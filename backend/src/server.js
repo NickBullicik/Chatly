@@ -9,6 +9,7 @@ import messageRoutes from './routes/message.route.js';
 dotenv.config();
 
 const app = express();
+const apiRouter = express.Router();
 const __dirname = path.resolve();
 
 const PORT = process.env.PORT;
@@ -16,8 +17,11 @@ const PORT = process.env.PORT;
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/messages", messageRoutes);
+apiRouter.use("/auth", authRoutes);
+apiRouter.use("/messages", messageRoutes);
+
+app.use("/api", apiRouter);
+app.use(apiRouter);
 
 if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "../frontend/dist")));
