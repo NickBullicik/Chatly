@@ -5,6 +5,7 @@ import path from 'path';
 
 import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
+import { connectDB } from './lib/db.js';
 
 dotenv.config();
 
@@ -27,15 +28,13 @@ if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
     app.get("*", (req, res) => {
-        if (req.path.startsWith("/api")) {
-            return res.status(404).json({ error: "Ruta no encontrada" });
-        }
         res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
     });
 }
 
-if (process.env.NODE_ENV !== "production" || process.env.VERCEL !== "1") {
-    app.listen(PORT, () => console.log("Server running on port: " + PORT));
-}
+app.listen(PORT, () => {
+    console.log("Server running on port: " + PORT);
+    connectDB();
+});   
 
 export default app;
